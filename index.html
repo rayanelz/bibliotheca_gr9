@@ -3,100 +3,485 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bibliotheca - Groupe 9</title>
+    <title>Bibliotheca Dashboard</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
-
-    <div class="d-flex" id="wrapper">
-        <div class="bg-dark text-white p-3" id="sidebar-wrapper" style="width: 250px; min-height: 100vh;">
-            <div class="sidebar-heading border-bottom pb-3 mb-3">Bibliotheca 📚</div>
-            <div class="list-group list-group-flush">
-                <a href="#" class="list-group-item list-group-item-action list-group-item-dark" onclick="showSection('dashboard')">Dashboard</a>
-                <a href="#" class="list-group-item list-group-item-action list-group-item-dark" onclick="showSection('livres')">Gestion Livres</a>
-                <a href="#" class="list-group-item list-group-item-action list-group-item-dark" onclick="showSection('auteurs')">Gestion Auteurs</a>
+    <div class="wrapper">
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-book"></i> Bibliotheca</h3>
             </div>
-        </div>
+            <ul class="list-unstyled components">
+                <li class="nav-item">
+                    <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#books" class="nav-link" data-section="books">
+                        <i class="fas fa-book-open"></i> Livres
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#authors" class="nav-link" data-section="authors">
+                        <i class="fas fa-user-edit"></i> Auteurs
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#statistics" class="nav-link" data-section="statistics">
+                        <i class="fas fa-chart-bar"></i> Statistiques
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
-        <div id="page-content-wrapper" class="w-100">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom px-3">
+        <!-- Page Content -->
+        <div id="content" class="content">
+            <!-- Top Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container-fluid">
-                    <span class="navbar-brand">Groupe 9 - Sujet Bibliotheca</span>
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-align-left"></i>
+                    </button>
                 </div>
             </nav>
 
-            <div class="container-fluid mt-4">
-                
-                <section id="section-dashboard" class="app-section">
-                    <h2>Tableau de Bord</h2>
-                    <p class="text-muted">Bienvenue dans l'application de gestion de bibliothèque.</p>
-                    <div class="alert alert-info">
-                        Les statistiques (KPI) et graphiques seront intégrés ici (Semaine 3).
-                    </div>
-                </section>
-
-                <section id="section-livres" class="app-section" style="display:none;">
-                    <h2>Gestion des Livres</h2>
-                    <p>Module principal</p>
-
-                    <div class="card mb-4">
-                        <div class="card-header">Ajouter un nouveau livre</div>
-                        <div class="card-body">
-                            <form id="form-livre">
-                                <div class="row g-3">
-                                    <div class="col-md-4">
-                                        <input type="text" class="form-control" id="titre" placeholder="Titre du livre" required>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input type="text" class="form-control" id="auteur" placeholder="Auteur" required>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select id="genre" class="form-select">
-                                            <option value="Roman">Roman</option>
-                                            <option value="Science-Fiction">Science-Fiction</option>
-                                            <option value="Essai">Essai</option>
-                                            <option value="Biographie">Biographie</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button type="submit" class="btn btn-primary w-100">Ajouter</button>
+            <!-- Main Content Area -->
+            <div class="main-content">
+                <!-- Dashboard Section -->
+                <section id="dashboard-section" class="content-section active">
+                    <div class="container-fluid">
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h1 class="h3 mb-3"><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+                            </div>
+                        </div>
+                        
+                        <!-- KPI Cards -->
+                        <div class="row mb-4" id="kpi-cards">
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-primary shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                    Total Livres
+                                                </div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="total-books">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-book fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </form>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-success shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                    Total Auteurs
+                                                </div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="total-authors">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-user-edit fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-info shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                                    Livres Disponibles
+                                                </div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="available-books">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card border-left-warning shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                    Genre Populaire
+                                                </div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="popular-genre">-</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-star fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">Liste des livres disponibles</div>
-                        <div class="card-body">
-                            <table class="table table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Titre</th>
-                                        <th>Auteur</th>
-                                        <th>Genre</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="table-livres-body">
-                                    </tbody>
-                            </table>
+                        
+                        <!-- Charts -->
+                        <div class="row">
+                            <div class="col-xl-8 col-lg-7">
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">Répartition par Genre</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="genreChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-4 col-lg-5">
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">Statut API</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="api-status" class="text-center">
+                                            <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                                            <p class="mt-2">Vérification de l'API...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
 
-                <section id="section-auteurs" class="app-section" style="display:none;">
-                    <h2>Gestion des Auteurs</h2>
-                    <p>Module secondaire (À développer en Semaine 2)</p>
-                    <div class="alert alert-warning">
-                        Interface en construction.
+                <!-- Books Section -->
+                <section id="books-section" class="content-section">
+                    <div class="container-fluid">
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h1 class="h3 mb-3"><i class="fas fa-book-open"></i> Gestion des Livres</h1>
+                            </div>
+                        </div>
+                        
+                        <!-- Books Controls -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <button class="btn btn-primary" id="add-book-btn">
+                                    <i class="fas fa-plus"></i> Ajouter un Livre
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="book-search" placeholder="Rechercher un livre...">
+                                    <button class="btn btn-outline-secondary" type="button" id="search-btn">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                                <div class="d-flex justify-content-end mt-2">
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Mode de recherche">
+                                        <button type="button" class="btn btn-outline-secondary active" id="search-mode-local">
+                                            Local
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary" id="search-mode-api">
+                                            OpenLibrary
+                                        </button>
+                                    </div>
+                                </div>
+                                <small class="text-muted d-block text-end" id="search-mode-hint">
+                                    Recherche locale (bibliothèque enregistrée)
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <!-- Sort Controls -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <select class="form-select" id="sort-books">
+                                    <option value="title">Trier par Titre</option>
+                                    <option value="author">Trier par Auteur</option>
+                                    <option value="year">Trier par Année</option>
+                                    <option value="genre">Trier par Genre</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Books List -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <div id="books-list">
+                                            <p class="text-muted text-center">Aucun livre trouvé. Ajoutez votre premier livre !</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
+                <!-- Authors Section -->
+                <section id="authors-section" class="content-section">
+                    <div class="container-fluid">
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h1 class="h3 mb-3"><i class="fas fa-user-edit"></i> Gestion des Auteurs</h1>
+                            </div>
+                        </div>
+                        
+                        <!-- Authors Controls -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <button class="btn btn-success" id="add-author-btn">
+                                    <i class="fas fa-plus"></i> Ajouter un Auteur
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Authors List -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <div id="authors-list">
+                                            <p class="text-muted text-center">Aucun auteur trouvé. Ajoutez votre premier auteur !</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Statistics Section -->
+                <section id="statistics-section" class="content-section">
+                    <div class="container-fluid">
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h1 class="h3 mb-3"><i class="fas fa-chart-bar"></i> Statistiques Avancées</h1>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <canvas id="advancedChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Modals -->
+    <!-- Book Modal -->
+    <div class="modal fade" id="bookModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookModalTitle">Ajouter un Livre</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bookForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="bookTitle" class="form-label">
+                                        <i class="fas fa-book text-primary me-1"></i>
+                                        Titre du Livre *
+                                    </label>
+                                    <input type="text" class="form-control" id="bookTitle" 
+                                           placeholder="Ex: Le Petit Prince" required>
+                                    <div class="form-text">Le titre complet du livre tel qu'il apparaît sur la couverture</div>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="bookAuthor" class="form-label">
+                                        <i class="fas fa-user-edit text-success me-1"></i>
+                                        Nom de l'Auteur *
+                                    </label>
+                                    <input type="text" class="form-control" id="bookAuthor" 
+                                           placeholder="Ex: Antoine de Saint-Exupéry" required>
+                                    <div class="form-text">Nom complet de l'auteur principal du livre</div>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="bookISBN" class="form-label">
+                                        <i class="fas fa-barcode text-info me-1"></i>
+                                        ISBN (Optionnel)
+                                    </label>
+                                    <input type="text" class="form-control" id="bookISBN" 
+                                           placeholder="Ex: 978-2-07-040809-8">
+                                    <div class="form-text">Code ISBN-10 ou ISBN-13 pour identifier le livre (permet l'enrichissement automatique)</div>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="bookGenre" class="form-label">
+                                        <i class="fas fa-tags text-warning me-1"></i>
+                                        Genre Littéraire *
+                                    </label>
+                                    <select class="form-select" id="bookGenre" required>
+                                        <option value="">Choisissez le genre principal</option>
+                                        <option value="Fiction">Fiction - Romans, nouvelles</option>
+                                        <option value="Non-Fiction">Non-Fiction - Documentaires, essais</option>
+                                        <option value="Science-Fiction">Science-Fiction - Futur, technologie</option>
+                                        <option value="Fantasy">Fantasy - Magie, mondes imaginaires</option>
+                                        <option value="Romance">Romance - Histoires d'amour</option>
+                                        <option value="Thriller">Thriller - Suspense, action</option>
+                                        <option value="Histoire">Histoire - Événements historiques</option>
+                                        <option value="Biographie">Biographie - Vie de personnalités</option>
+                                        <option value="Essai">Essai - Réflexions, analyses</option>
+                                        <option value="Poésie">Poésie - Recueils de poèmes</option>
+                                    </select>
+                                    <div class="form-text">Catégorie principale du livre pour le classement</div>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="bookYear" class="form-label">
+                                        <i class="fas fa-calendar text-secondary me-1"></i>
+                                        Année de Publication *
+                                    </label>
+                                    <input type="number" class="form-control" id="bookYear" 
+                                           min="1000" max="2025" placeholder="Ex: 1943" required>
+                                    <div class="form-text">Année de première publication du livre (entre 1000 et 2025)</div>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="bookRating" class="form-label">
+                                        <i class="fas fa-star text-warning me-1"></i>
+                                        Votre Évaluation (Optionnel)
+                                    </label>
+                                    <select class="form-select" id="bookRating">
+                                        <option value="">Aucune évaluation</option>
+                                        <option value="1">⭐ 1 étoile - Décevant</option>
+                                        <option value="2">⭐⭐ 2 étoiles - Moyen</option>
+                                        <option value="3">⭐⭐⭐ 3 étoiles - Bien</option>
+                                        <option value="4">⭐⭐⭐⭐ 4 étoiles - Très bien</option>
+                                        <option value="5">⭐⭐⭐⭐⭐ 5 étoiles - Excellent</option>
+                                    </select>
+                                    <div class="form-text">Votre appréciation personnelle du livre</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="bookDescription" class="form-label">
+                                <i class="fas fa-align-left text-muted me-1"></i>
+                                Résumé ou Description (Optionnel)
+                            </label>
+                            <textarea class="form-control" id="bookDescription" rows="3" 
+                                      placeholder="Décrivez brièvement l'histoire, les thèmes principaux ou vos impressions..."></textarea>
+                            <div class="form-text">Résumé du livre, thèmes abordés ou vos notes personnelles</div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="bookAvailable" checked>
+                                <label class="form-check-label" for="bookAvailable">
+                                    <i class="fas fa-check-circle text-success me-1"></i>
+                                    <strong>Livre disponible dans la bibliothèque</strong>
+                                </label>
+                                <div class="form-text">Cochez si le livre est actuellement disponible pour consultation ou prêt</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Aide contextuelle -->
+                        <div class="alert alert-info mt-3">
+                            <h6><i class="fas fa-info-circle me-2"></i>Aide pour remplir le formulaire :</h6>
+                            <ul class="mb-0 small">
+                                <li><strong>Champs obligatoires (*)</strong> : Titre, Auteur, Genre et Année sont requis</li>
+                                <li><strong>ISBN</strong> : Si vous l'ajoutez, le système enrichira automatiquement les informations</li>
+                                <li><strong>Genre</strong> : Choisissez la catégorie qui correspond le mieux au livre</li>
+                                <li><strong>Évaluation</strong> : Votre note personnelle pour retrouver vos favoris</li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary" id="saveBookBtn">Sauvegarder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="modal fade" id="authorModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="authorModalTitle">Ajouter un Auteur</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="authorForm">
+                        <div class="mb-3">
+                            <label for="authorName" class="form-label">Nom *</label>
+                            <input type="text" class="form-control" id="authorName" required>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="authorNationality" class="form-label">Nationalité</label>
+                            <input type="text" class="form-control" id="authorNationality">
+                        </div>
+                        <div class="mb-3">
+                            <label for="authorBirthDate" class="form-label">Date de Naissance</label>
+                            <input type="date" class="form-control" id="authorBirthDate">
+                        </div>
+                        <div class="mb-3">
+                            <label for="authorBiography" class="form-label">Biographie</label>
+                            <textarea class="form-control" id="authorBiography" rows="4"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-success" id="saveAuthorBtn">Sauvegarder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    
+    <script src="js/sample-data.js"></script>
+    <script src="js/storage-manager.js"></script>
+    <script src="js/api-client.js"></script>
+    <script src="js/book-manager.js"></script>
+    <script src="js/author-manager.js"></script>
+    <script src="js/dashboard-manager.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
